@@ -1,0 +1,7 @@
+- Name: StrawberryTool
+  Version: 0.2.1
+  DLL: StrawberryTool.dll
+  Author: DemoJameson
+  Dependencies:
+    - Name: Everest
+      Version: 1.1755.0
