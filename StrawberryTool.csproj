@@ -54,10 +54,25 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="DialogIds.cs" />
-        <Compile Include="StrawberryToolSettings.cs" />
-        <Compile Include="StrawberryToolModule.cs" />
+        <Compile Include="Extension\ExtendedDataExtensions.cs" />
+        <Compile Include="Extension\EntityExtension.cs" />
+        <Compile Include="Extension\CameraExtension.cs" />
+        <Compile Include="Extension\SimpleExtension.cs" />
+        <Compile Include="Extension\Vector2Extension.cs" />
+        <Compile Include="Feature\Detector\CollectableConfig.cs" />
+        <Compile Include="Feature\Detector\DetectorUtils.cs" />
+        <Compile Include="Feature\Detector\CollectablePointer.cs" />
+        <Compile Include="Feature\Detector\OuiDetectorSubmenu.cs" />
+        <Compile Include="Feature\Translucent\OuiTranslucentSubmenu.cs" />
+        <Compile Include="Feature\Translucent\TranslucentUtils.cs" />
+        <Compile Include="Module\StrawberryToolModule.cs" />
+        <Compile Include="Module\StrawberryToolSettings.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="UI\AbstractSubmenu.cs" />
+        <Compile Include="UI\DialogIds.cs" />
+        <Compile Include="UI\TextMenuButtonExt.cs" />
+        <Compile Include="UI\TextMenuExt.cs" />
+        <Compile Include="UI\TextMenuOptionExt.cs" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="Dialog\**">
@@ -70,6 +85,9 @@
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Update="Dialog\Fonts\chinese_strawberry_tool.fnt">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Dialog\Fonts\missing_character.txt">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>

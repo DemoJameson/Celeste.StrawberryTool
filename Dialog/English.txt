@@ -30,7 +30,20 @@
 # ================================== Mod Options Menu ==================================
 STRAWBERRY_TOOL=                               Strawberry Tool
 STRAWBERRY_TOOL_ENABLED=                       Enabled
-STRAWBERRY_TOOL_TRANSPARENT_RADIUS=            Transparent Radius
-STRAWBERRY_TOOL_TRANSPARENT_RADIUS_DESCRIPTION=
-STRAWBERRY_TOOL_TRANSLUCENT_RADIUS=            TranslucentRadius
-STRAWBERRY_TOOL_TRANSLUCENT_RADIUS_DESCRIPTION=
+STRAWBERRY_TOOL_TRANSLUCENT_OPTIONS=           Translucent Options
+STRAWBERRY_TOOL_DETECTOR_OPTIONS=              Detector Options
+
+# ================================== Translucent ==================================
+STRAWBERRY_TOOL_TRANSLUCENT_ENABLED=           Enabled
+STRAWBERRY_TOOL_TRANSPARENT_RADIUS=            Completely Transparent Radius
+STRAWBERRY_TOOL_TRANSPARENT_RADIUS_DESCRIPTION=The strawberry is completely transparent when the distance from the Madeline is less than this value.
+STRAWBERRY_TOOL_TRANSLUCENT_RADIUS=            Gradually Transparent Radius
+STRAWBERRY_TOOL_TRANSLUCENT_RADIUS_DESCRIPTION=The strawberry is gradually transparent from far to near.
+
+# ================================== Detector ==================================
+STRAWBERRY_TOOL_DETECTOR_ENABLED=               Enabled
+STRAWBERRY_TOOL_POINTER_OPACITY=                Pointer Opacity
+STRAWBERRY_TOOL_SHOW_ICON=                      Show Icon
+STRAWBERRY_TOOL_DETECTOR_RANGE=                 Detector Range
+STRAWBERRY_TOOL_DETECT_CURRENT_ROOM=            Detect Current Room
+STRAWBERRY_TOOL_DETECT_COLLECTED=               Detect Collected

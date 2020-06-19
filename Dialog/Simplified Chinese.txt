@@ -30,7 +30,20 @@
 # ================================== Mod Options Menu ==================================
 STRAWBERRY_TOOL=                               草莓辅助工具
 STRAWBERRY_TOOL_ENABLED=                       开关
-STRAWBERRY_TOOL_TRANSPARENT_RADIUS=            全透明半径
-STRAWBERRY_TOOL_TRANSPARENT_RADIUS_DESCRIPTION=
-STRAWBERRY_TOOL_TRANSLUCENT_RADIUS=            半透明渐变半径
-STRAWBERRY_TOOL_TRANSLUCENT_RADIUS_DESCRIPTION=
+STRAWBERRY_TOOL_TRANSLUCENT_OPTIONS=           半透明选项
+STRAWBERRY_TOOL_DETECTOR_OPTIONS=              探测器选项
+
+# ================================== Translucent ==================================
+STRAWBERRY_TOOL_TRANSLUCENT_ENABLED=           开关
+STRAWBERRY_TOOL_TRANSPARENT_RADIUS=            完全透明半径
+STRAWBERRY_TOOL_TRANSPARENT_RADIUS_DESCRIPTION=草莓与Madeline的距离小于此值时完全透明
+STRAWBERRY_TOOL_TRANSLUCENT_RADIUS=            透明渐变半径
+STRAWBERRY_TOOL_TRANSLUCENT_RADIUS_DESCRIPTION=草莓从远到近逐渐透明
+
+# ================================== Detector ==================================
+STRAWBERRY_TOOL_DETECTOR_ENABLED=               开关
+STRAWBERRY_TOOL_POINTER_OPACITY=                指针透明度
+STRAWBERRY_TOOL_SHOW_ICON=                      显示图标
+STRAWBERRY_TOOL_DETECTOR_RANGE=                 探测范围
+STRAWBERRY_TOOL_DETECT_CURRENT_ROOM=            探测当前房间
+STRAWBERRY_TOOL_DETECT_COLLECTED=               探测已收集的
