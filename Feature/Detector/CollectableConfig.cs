@@ -21,13 +21,6 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                             return true;
                         case "memorialTextController":
                             return session.Dashes == 0 && session.StartedFromBeginning;
-                        case "goldenBerry":
-                            bool cheatMode = SaveData.Instance.CheatMode;
-                            bool initialState = session.FurthestSeenLevel == session.Level || session.Deaths == 0;
-                            bool unlockGolden = SaveData.Instance.UnlockedModes >= 3 || SaveData.Instance.DebugMode;
-                            bool completed = SaveData.Instance.Areas[session.Area.ID].Modes[(int) session.Area.Mode]
-                                .Completed;
-                            return (cheatMode || initialState && unlockGolden) && completed;
                         default:
                             return false;
                     }

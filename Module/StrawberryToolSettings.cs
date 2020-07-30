@@ -60,13 +60,15 @@ namespace Celeste.Mod.StrawberryTool.Module {
         #region Detector
 
         [SettingIgnore] public bool DetectorEnabled { get; set; } = true;
-        [SettingIgnore] public int PointerOpacity { get; set; } = 5;
+        [SettingIgnore] public int DetectorOpacity { get; set; } = 10;
+        [SettingIgnore] public bool OpacityGradient { get; set; } = true;
+        [SettingIgnore] public bool ShowPointer { get; set; } = true;
         [SettingIgnore] public bool ShowIcon { get; set; } = true;
-        [SettingIgnore] public int DetectorRange { get; set; } = 4;
+        [SettingIgnore] public bool ShowIconAtScreenEdge { get; set; } = true;
+        [SettingIgnore] public int DetectorRange { get; set; } = 6;
+        [SettingIgnore] public int MaxPointers { get; set; } = 1;
         [SettingIgnore] public bool DetectCurrentRoom { get; set; } = true;
         [SettingIgnore] public bool DetectCollected { get; set; } = true;
-        // TODO: 2.探测所有可收集物并且可控制 4.指针末端是否显示收集物图案
-        // TODO： 最多显示多少指针
 
         public string Detector { get; set; } = string.Empty;
 

@@ -10,19 +10,34 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             menu.Add(new TextMenu.OnOff(DialogIds.DetectorEnabled.DialogClean(), Settings.DetectorEnabled)
                 .Change(value => Settings.DetectorEnabled = value));
 
-            menu.Add(new TextMenu.Slider(DialogIds.PointerOpacity.DialogClean(),
+            menu.Add(new TextMenu.Slider(DialogIds.DetectorOpacity.DialogClean(),
                 value => (value / 10f).ToString("0.0"), 1, 10,
-                Settings.PointerOpacity) {
-                OnValueChange = value => Settings.PointerOpacity = value
+                Settings.DetectorOpacity) {
+                OnValueChange = value => Settings.DetectorOpacity = value
             });
+            
+            menu.Add(new TextMenu.OnOff(DialogIds.OpacityGradient.DialogClean(), Settings.OpacityGradient)
+                .Change( value => Settings.OpacityGradient = value));
+            
+            menu.Add(new TextMenu.OnOff(DialogIds.ShowPointer.DialogClean(), Settings.ShowPointer)
+                .Change( value => Settings.ShowPointer = value));
             
             menu.Add(new TextMenu.OnOff(DialogIds.ShowIcon.DialogClean(), Settings.ShowIcon)
                 .Change( value => Settings.ShowIcon = value));
+            
+            menu.Add(new TextMenu.OnOff(DialogIds.ShowIconAtScreenEdge.DialogClean(), Settings.ShowIconAtScreenEdge)
+                .Change( value => Settings.ShowIconAtScreenEdge = value));
             
             menu.Add(new TextMenu.Slider(DialogIds.DetectorRange.DialogClean(),
                 value => (value * 100).ToString(), 1, 99,
                 Settings.DetectorRange) {
                 OnValueChange = value => Settings.DetectorRange = value
+            });
+            
+            menu.Add(new TextMenu.Slider(DialogIds.MaxPointers.DialogClean(),
+                value => value.ToString(), 1, 10,
+                Settings.MaxPointers) {
+                OnValueChange = value => Settings.MaxPointers = value
             });
 
             menu.Add(new TextMenu.OnOff(DialogIds.DetectCurrentRoom.DialogClean(), Settings.DetectCurrentRoom)

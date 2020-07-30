@@ -11,13 +11,20 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
     public class CollectablePointer : Entity {
         private static StrawberryToolSettings Settings => StrawberryToolModule.Settings;
 
+        private static readonly float PointerLength = 20;
+        private static readonly float IconLength = 40;
+        
         public readonly EntityData EntityData;
+        public float Alpha = 0f;
+        private float lastAlpha = 0f;
         private readonly CollectableConfig collectableConfig;
         private readonly Vector2 followerPosition;
         private readonly List<MTexture> arrowImages;
         private float direction;
         private Sprite sprite;
+        private float transitionFade = 1f;
         private float fade = 1f;
+        private Level level;
 
         public CollectablePointer(EntityData followerPosition, CollectableConfig collectableConfig) {
             EntityData = followerPosition;
@@ -31,12 +38,11 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             arrowImages = GFX.Game.GetAtlasSubtextures("util/dasharrow/dasharrow");
 
             Add(new TransitionListener {
-                OnOut = delegate(float f) {
-                    if (!Settings.DetectCurrentRoom && EntityData.Level == SceneAs<Level>().Session.LevelData) {
-                        fade = 1 - f;
-                    }
-                    else {
-                        fade = 1f;
+                OnOut = delegate(float value) {
+                    if (!Settings.DetectCurrentRoom && EntityData.Level == level.Session.LevelData) {
+                        transitionFade = 1 - value;
+                    } else {
+                        transitionFade = 1f;
                     }
                 },
             });
@@ -44,8 +50,9 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
         public override void Added(Scene scene) {
             base.Added(scene);
+            level = scene as Level;
 
-            sprite = collectableConfig.GetSprite(SceneAs<Level>(), EntityData);
+            sprite = collectableConfig.GetSprite(level, EntityData);
             sprite.Scale = Vector2.One * collectableConfig.Scale;
             Add(sprite);
         }
@@ -58,7 +65,6 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 return;
             }
 
-            Position = (player.Center + GetOffset(player) + Calc.AngleToVector(direction, 40f)).Round();
 
             float angle = (followerPosition - player.Position).Angle();
             if (Calc.AbsAngleDiff(angle, direction) >= 1.58079636f) {
@@ -67,7 +73,13 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 direction = Calc.AngleApproach(direction, angle, (float) Math.PI * 6f * Engine.RawDeltaTime);
             }
 
-            if (SceneAs<Level>().Session.DoNotLoad.Contains(EntityData.ToEntityID())) {
+            if (Settings.ShowIconAtScreenEdge) {
+                Position = GetCameraEdgePosition(level.Camera.Center());
+            } else {
+                Position = GetAroundPlayerPosition(player, IconLength);
+            }
+
+            if (level.Session.DoNotLoad.Contains(EntityData.ToEntityID())) {
                 RemoveSelf();
                 return;
             }
@@ -85,7 +97,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
             bool collected = !Settings.DetectCollected && collectableConfig.HasCollected(EntityData);
 
-            Visible = !follow && !collected;
+            fade = follow || collected ? 0 : 1;
         }
 
         public override void Render() {
@@ -104,22 +116,46 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
             base.Render();
 
-            float alpha = Settings.PointerOpacity / 10f * fade;
-            float distance = Vector2.Distance(followerPosition, player.Position);
+            float alpha = Settings.DetectorOpacity / 10f * fade * transitionFade;
+            float distance = Vector2.Distance(followerPosition, Settings.ShowIconAtScreenEdge ? level.Camera.Center() : player.Position);
             float detectorRange = Settings.DetectorRange * 100;
 
             if (!Settings.DetectCurrentRoom) {
-                distance = player.Position.Distance(EntityData.Level.Bounds);
+                if (level.Session.LevelData == EntityData.Level) {
+                    distance = float.MaxValue;
+                } else {
+                    distance = player.Position.Distance(EntityData.Level.Bounds);
+                }
             }
 
             if (distance < detectorRange) {
                 alpha *= 1 - distance / detectorRange;
-            }
-            else {
+            } else {
                 alpha = 0f;
             }
 
+            Alpha = alpha;
+
+            if (!Settings.OpacityGradient) {
+                alpha = 1f;
+            }
+
+            var list = level.Entities.FindAll<CollectablePointer>();
+            int currentRoomCounts = list.Count(pointer => level.Session.LevelData == pointer.EntityData.Level);
+            list.Sort((pointer, collectablePointer) => Math.Sign(collectablePointer.Alpha - pointer.Alpha));
+            if (list.IndexOf(this) >= Settings.MaxPointers - (Settings.DetectCurrentRoom ? 0 : currentRoomCounts)) {
+                alpha = 0;
+            }
+
+            alpha = Calc.Approach(lastAlpha, alpha, Engine.DeltaTime * 3);
+
+            lastAlpha = alpha;
+
             sprite.Color = Color.White * alpha * (Settings.ShowIcon ? 1 : 0);
+
+            if (!Settings.ShowPointer) {
+                return;
+            }
 
             MTexture mTexture = null;
             float rotation = float.MaxValue;
@@ -139,15 +175,22 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 rotation = 0f;
             }
 
-            mTexture.DrawCentered(
-                (player.Center + GetOffset(player) + Calc.AngleToVector(direction, 30f)).Round(),
-                Color.White * alpha, 1f, rotation);
+            mTexture.DrawCentered(GetAroundPlayerPosition(player, PointerLength), Color.White * alpha, 1f, rotation);
+        }
+
+        private Vector2 GetAroundPlayerPosition(Player player, float length) {
+            return (player.Position + GetOffset(player) + Calc.AngleToVector(direction, length))
+                .Round();
+        }
+
+        private Vector2 GetCameraEdgePosition(Vector2 position) {
+            return level.Camera.GetIntersectionPoint(position, followerPosition, 5f);
         }
 
         private static Vector2 GetOffset(Player player) {
             return player.CurrentBooster == null && player.StateMachine.PreviousState != Player.StRedDash
-                ? Vector2.Zero
-                : new Vector2(0f, -4f);
+                ? new Vector2(0f, -6f)
+                : new Vector2(0f, -10f);
         }
     }
 }

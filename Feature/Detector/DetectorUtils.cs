@@ -17,6 +17,13 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             On.Monocle.Entity.RemoveSelf += EntityOnRemoveSelf;
         }
 
+        public static void Unload() {
+            On.Celeste.Player.Added -= PlayerOnAdded;
+            On.Celeste.HeartGem.ctor_EntityData_Vector2 -= HeartGemOnCtor_EntityData_Vector2;
+            On.Celeste.Cassette.ctor_EntityData_Vector2 -= CassetteOnCtor_EntityData_Vector2;
+            On.Monocle.Entity.RemoveSelf -= EntityOnRemoveSelf;
+        }
+
         private static void HeartGemOnCtor_EntityData_Vector2(On.Celeste.HeartGem.orig_ctor_EntityData_Vector2 orig,
             HeartGem self, EntityData data, Vector2 offset) {
             orig(self, data, offset);
@@ -39,10 +46,6 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             }
 
             orig(self);
-        }
-
-        public static void Unload() {
-            On.Celeste.Player.Added -= PlayerOnAdded;
         }
 
         private static void PlayerOnAdded(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {

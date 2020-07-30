@@ -42,8 +42,12 @@ STRAWBERRY_TOOL_TRANSLUCENT_RADIUS_DESCRIPTION=草莓从远到近逐渐透明
 
 # ================================== Detector ==================================
 STRAWBERRY_TOOL_DETECTOR_ENABLED=               开关
-STRAWBERRY_TOOL_POINTER_OPACITY=                指针透明度
+STRAWBERRY_TOOL_DETECTOR_OPACITY=               不透明度
+STRAWBERRY_TOOL_OPACITY_GRADIENT=               透明度渐变
+STRAWBERRY_TOOL_SHOW_POINTER=                   显示指针
 STRAWBERRY_TOOL_SHOW_ICON=                      显示图标
+STRAWBERRY_TOOL_SHOW_ICON_AT_SCREEN_EDGE=       在屏幕边缘显示图标
 STRAWBERRY_TOOL_DETECTOR_RANGE=                 探测范围
+STRAWBERRY_TOOL_MAX_POINTERS=                   最大探测数量
 STRAWBERRY_TOOL_DETECT_CURRENT_ROOM=            探测当前房间
 STRAWBERRY_TOOL_DETECT_COLLECTED=               探测已收集的

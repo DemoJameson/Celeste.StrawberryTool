@@ -42,8 +42,12 @@ STRAWBERRY_TOOL_TRANSLUCENT_RADIUS_DESCRIPTION=The strawberry is gradually trans
 
 # ================================== Detector ==================================
 STRAWBERRY_TOOL_DETECTOR_ENABLED=               Enabled
-STRAWBERRY_TOOL_POINTER_OPACITY=                Pointer Opacity
+STRAWBERRY_TOOL_DETECTOR_OPACITY=               Opacity
+STRAWBERRY_TOOL_OPACITY_GRADIENT=               Opacity Gradient
+STRAWBERRY_TOOL_SHOW_POINTER=                   Show Pointer
 STRAWBERRY_TOOL_SHOW_ICON=                      Show Icon
+STRAWBERRY_TOOL_SHOW_ICON_AT_SCREEN_EDGE=       Show Icon at Screen Edge
 STRAWBERRY_TOOL_DETECTOR_RANGE=                 Detector Range
+STRAWBERRY_TOOL_MAX_POINTERS=                   Max Pointers
 STRAWBERRY_TOOL_DETECT_CURRENT_ROOM=            Detect Current Room
 STRAWBERRY_TOOL_DETECT_COLLECTED=               Detect Collected

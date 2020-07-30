@@ -12,9 +12,13 @@ namespace Celeste.Mod.StrawberryTool.UI {
 
         public const string DetectorOptions = "STRAWBERRY_TOOL_DETECTOR_OPTIONS";
         public const string DetectorEnabled = "STRAWBERRY_TOOL_DETECTOR_ENABLED";
-        public const string PointerOpacity = "STRAWBERRY_TOOL_POINTER_OPACITY";
+        public const string DetectorOpacity = "STRAWBERRY_TOOL_DETECTOR_OPACITY";
+        public const string OpacityGradient = "STRAWBERRY_TOOL_OPACITY_GRADIENT";
+        public const string ShowPointer = "STRAWBERRY_TOOL_SHOW_POINTER";
         public const string ShowIcon = "STRAWBERRY_TOOL_SHOW_ICON";
+        public const string ShowIconAtScreenEdge = "STRAWBERRY_TOOL_SHOW_ICON_AT_SCREEN_EDGE";
         public const string DetectorRange = "STRAWBERRY_TOOL_DETECTOR_RANGE";
+        public const string MaxPointers = "STRAWBERRY_TOOL_MAX_POINTERS";
         public const string DetectCurrentRoom = "STRAWBERRY_TOOL_DETECT_CURRENT_ROOM";
         public const string DetectCollected = "STRAWBERRY_TOOL_DETECT_COLLECTED";
     }

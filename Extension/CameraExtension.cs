@@ -3,27 +3,25 @@ using Monocle;
 
 namespace Celeste.Mod.StrawberryTool.Extension {
     public static class CameraExtension {
-        public static Vector2 GetIntersectionPoint(this Camera camera, Vector2 start, Vector2 end) {
-            Line line1 = new Line(start, end);
-
-            Line line2 = new Line(camera.TopLeft(), camera.BottomLeft());
-            if (Line.Intersects(line1, line2)) {
-                return Line.GetIntersectionPoint(line1, line2);
+        public static Vector2 GetIntersectionPoint(this Camera camera, Vector2 start, Vector2 end, float margin = 0f) {
+            Vector2 result = FindIntersection(camera.TopLeft(), camera.BottomLeft(), start, end);
+            if (!result.Equals(default)) {
+                return result + Vector2.UnitX * margin;
             }
-
-            line2 = new Line(camera.TopRight(), camera.BottomRight());
-            if (Line.Intersects(line1, line2)) {
-                return Line.GetIntersectionPoint(line1, line2);
+            
+            result = FindIntersection(camera.TopRight(), camera.BottomRight(), start, end);
+            if (!result.Equals(default)) {
+                return result - Vector2.UnitX * margin;
             }
-
-            line2 = new Line(camera.TopLeft(), camera.TopRight());
-            if (Line.Intersects(line1, line2)) {
-                return Line.GetIntersectionPoint(line1, line2);
+            
+            result = FindIntersection(camera.TopLeft(), camera.TopRight(), start, end);
+            if (!result.Equals(default)) {
+                return result + Vector2.UnitY * margin;
             }
-
-            line2 = new Line(camera.BottomLeft(), camera.BottomRight());
-            if (Line.Intersects(line1, line2)) {
-                return Line.GetIntersectionPoint(line1, line2);
+            
+            result = FindIntersection(camera.BottomLeft(), camera.BottomRight(), start, end);
+            if (!result.Equals(default)) {
+                return result - Vector2.UnitY * margin;
             }
 
             return default;
@@ -48,41 +46,41 @@ namespace Celeste.Mod.StrawberryTool.Extension {
         private static Vector2 BottomRight(this Camera camera) {
             return new Vector2(camera.Right, camera.Bottom);
         }
-    }
 
-    class Line {
-        private Vector2 start;
-        private Vector2 end;
+        private static Vector2 FindIntersection(
+            Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4) {
+            Vector2 intersection = default;
 
-        public Line(Vector2 start, Vector2 end) {
-            this.start = start;
-            this.end = end;
-        }
+            // Get the segments' parameters.
+            float dx12 = p2.X - p1.X;
+            float dy12 = p2.Y - p1.Y;
+            float dx34 = p4.X - p3.X;
+            float dy34 = p4.Y - p3.Y;
 
-        public static Vector2 GetIntersectionPoint(Line a, Line b) {
-            //y = kx + m;
-            //k = (y2 - y1) / (x2 - x1)
-            float kA = (a.end.Y - a.start.Y) / (a.end.X - a.start.X);
-            float kB = (b.end.Y - b.start.Y) / (b.end.X - b.start.X);
+            // Solve for t1 and t2
+            float denominator = (dy12 * dx34 - dx12 * dy34);
 
-            //m = y - k * x
-            float mA = a.start.Y - kA * a.start.X;
-            float mB = b.start.Y - kB * b.start.X;
-
-            float x = (mB - mA) / (kA - kB);
-            float y = kA * x + mA;
-            return new Vector2(x, y);
-        }
-
-        public static bool Intersects(Line a, Line b) {
-            Vector2 intersect = GetIntersectionPoint(a, b);
-
-            if (Vector2.Distance(a.start, intersect) < Vector2.Distance(a.start, a.end) &&
-                Vector2.Distance(a.end, intersect) < Vector2.Distance(a.start, a.end)) {
-                return true;
+            float t1 =
+                ((p1.X - p3.X) * dy34 + (p3.Y - p1.Y) * dx34)
+                / denominator;
+            if (float.IsInfinity(t1)) {
+                // The lines are parallel (or close enough to it).
+                return default;
             }
 
-            return false;
+            float t2 = ((p3.X - p1.X) * dy12 + (p1.Y - p3.Y) * dx12) / -denominator;
+
+            // Find the point of intersection.
+            intersection = new Vector2(p1.X + dx12 * t1, p1.Y + dy12 * t1);
+
+            // The segments intersect if t1 and t2 are between 0 and 1.
+            bool segments_intersect = t1 >= 0 && t1 <= 1 && t2 >= 0 && t2 <= 1;
+
+            if (segments_intersect) {
+                return intersection;
+            }
+
+            return default;
         }
     }
 }
