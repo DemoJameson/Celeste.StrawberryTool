@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Celeste.Mod.StrawberryTool.Extension;
 using Celeste.Mod.StrawberryTool.Module;
 using Microsoft.Xna.Framework;
@@ -11,14 +9,13 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
         private static StrawberryToolSettings Settings => StrawberryToolModule.Settings;
 
         public static void Load() {
-            On.Celeste.Player.Added += PlayerOnAdded;
+            On.Celeste.Level.LoadLevel += LevelOnLoadLevel;
             On.Celeste.HeartGem.ctor_EntityData_Vector2 += HeartGemOnCtor_EntityData_Vector2;
             On.Celeste.Cassette.ctor_EntityData_Vector2 += CassetteOnCtor_EntityData_Vector2;
             On.Monocle.Entity.RemoveSelf += EntityOnRemoveSelf;
         }
 
         public static void Unload() {
-            On.Celeste.Player.Added -= PlayerOnAdded;
             On.Celeste.HeartGem.ctor_EntityData_Vector2 -= HeartGemOnCtor_EntityData_Vector2;
             On.Celeste.Cassette.ctor_EntityData_Vector2 -= CassetteOnCtor_EntityData_Vector2;
             On.Monocle.Entity.RemoveSelf -= EntityOnRemoveSelf;
@@ -48,29 +45,22 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             orig(self);
         }
 
-        private static void PlayerOnAdded(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
-            orig(self, scene);
-
-            var entities = self.SceneAs<Level>().Session.MapData.Levels.SelectMany(data => data.Entities);
+        private static void LevelOnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self,
+            Player.IntroTypes playerIntro, bool isFromLoader) {
+            orig(self, playerIntro, isFromLoader);
+            if (!isFromLoader && playerIntro != Player.IntroTypes.Respawn) return;
+            var entities = self.Session.MapData.Levels.SelectMany(data => data.Entities);
             foreach (EntityData entityData in entities) {
                 TryAddPointer(self, entityData);
             }
         }
 
-        private static void TryAddPointer(Player player, EntityData entityData) {
+        private static void TryAddPointer(Level level, EntityData entityData) {
             CollectableConfig collectableConfig =
-                CollectableConfig.All.Find(item => item.ShouldBeAdded(player.SceneAs<Level>(), entityData));
-            if (collectableConfig == null) {
-                return;
+                CollectableConfig.All.Find(item => item.ShouldBeAdded(level, entityData));
+            if (collectableConfig != null) {
+                level.Add(new CollectablePointer(entityData, collectableConfig));
             }
-
-            player.Add(new Coroutine(AddCollectablePointer(player, entityData, collectableConfig)));
-        }
-
-        private static IEnumerator AddCollectablePointer(Player player, EntityData entityData,
-            CollectableConfig collectableConfig) {
-            player.Scene.Add(new CollectablePointer(entityData, collectableConfig));
-            yield break;
         }
     }
 }
