@@ -25,6 +25,8 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
         private float transitionFade = 1f;
         private float fade = 1f;
         private Level level;
+        private VertexLight light;
+        private BloomPoint bloom;
 
         public CollectablePointer(EntityData followerPosition, CollectableConfig collectableConfig) {
             EntityData = followerPosition;
@@ -35,7 +37,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             Tag = Tags.Persistent;
             Depth = Depths.Top;
 
-            arrowImages = GFX.Game.GetAtlasSubtextures("util/dasharrow/dasharrow");
+            arrowImages = GFX.Game.GetAtlasSubtextures("util/strawberry_tool_arrow/strawberry_tool_arrow");
 
             Add(new TransitionListener {
                 OnOut = delegate(float value) {
@@ -55,6 +57,8 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             sprite = collectableConfig.GetSprite(level, EntityData);
             sprite.Scale = Vector2.One * collectableConfig.Scale;
             Add(sprite);
+            Add(light = new VertexLight(Color.White, 1f, 12, 12));
+            Add(bloom = new BloomPoint(0.5f, 6f));
         }
 
         public override void Update() {
@@ -101,6 +105,8 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
         }
 
         public override void Render() {
+            light.Visible = bloom.Visible = false;
+
             if (!Settings.Enabled || !Settings.DetectorEnabled) {
                 return;
             }
@@ -152,6 +158,10 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             lastAlpha = alpha;
 
             sprite.Color = Color.White * alpha * (Settings.ShowIcon ? 1 : 0);
+
+            if (alpha > 0 && Settings.ShowIcon && Settings.ShowIconAtScreenEdge) {
+                light.Visible = bloom.Visible = true;
+            }
 
             if (!Settings.ShowPointer) {
                 return;
