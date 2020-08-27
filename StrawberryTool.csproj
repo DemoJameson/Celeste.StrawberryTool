@@ -92,8 +92,6 @@
         <Compile Include="UI\AbstractSubmenu.cs" />
         <Compile Include="UI\DialogIds.cs" />
         <Compile Include="UI\TextMenuButtonExt.cs" />
-        <Compile Include="UI\TextMenuExt.cs" />
-        <Compile Include="UI\TextMenuOptionExt.cs" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="Dialog\**">
