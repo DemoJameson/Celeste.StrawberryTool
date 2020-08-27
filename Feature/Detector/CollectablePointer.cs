@@ -15,7 +15,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
         private static readonly float IconLength = 40;
         
         public readonly EntityData EntityData;
-        public float Alpha = 0f;
+        private float Alpha = 0f;
         private float lastAlpha = 0f;
         private readonly CollectableConfig collectableConfig;
         private readonly Vector2 followerPosition;

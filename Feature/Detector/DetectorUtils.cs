@@ -1,24 +1,41 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Celeste.Mod.StrawberryTool.Extension;
-using Celeste.Mod.StrawberryTool.Module;
 using Microsoft.Xna.Framework;
+using Mono.Cecil.Cil;
 using Monocle;
+using MonoMod.Cil;
 
 namespace Celeste.Mod.StrawberryTool.Feature.Detector {
     public static class DetectorUtils {
-        private static StrawberryToolSettings Settings => StrawberryToolModule.Settings;
-
         public static void Load() {
             On.Celeste.Level.LoadLevel += LevelOnLoadLevel;
             On.Celeste.HeartGem.ctor_EntityData_Vector2 += HeartGemOnCtor_EntityData_Vector2;
             On.Celeste.Cassette.ctor_EntityData_Vector2 += CassetteOnCtor_EntityData_Vector2;
             On.Monocle.Entity.RemoveSelf += EntityOnRemoveSelf;
+            IL.Celeste.LightingRenderer.BeforeRender += LightingRendererOnBeforeRender;
         }
 
         public static void Unload() {
+            On.Celeste.Level.LoadLevel -= LevelOnLoadLevel;
             On.Celeste.HeartGem.ctor_EntityData_Vector2 -= HeartGemOnCtor_EntityData_Vector2;
             On.Celeste.Cassette.ctor_EntityData_Vector2 -= CassetteOnCtor_EntityData_Vector2;
             On.Monocle.Entity.RemoveSelf -= EntityOnRemoveSelf;
+            IL.Celeste.LightingRenderer.BeforeRender -= LightingRendererOnBeforeRender;
+        }
+
+        // replace if (item.DisableLightsInside)
+        // to      if (item.DisableLightsInside && component.Entity.GetType() != typeof(CollectablePointer)
+        // make CollectablePointer light inside foreground tiles.
+        private static void LightingRendererOnBeforeRender(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+            if (cursor.TryGotoNext(MoveType.After, instruction => instruction.MatchLdfld<Solid>("DisableLightsInside"))) {
+                if (cursor.TryFindNext(out var cursors, instruction => instruction.OpCode == OpCodes.Ldloc_S)) {
+                    cursor.Emit(cursors[0].Next.OpCode, cursors[0].Next.Operand);
+                    cursor.EmitDelegate<Func<bool, Component, bool>>((disableLightsInside, component) =>
+                        disableLightsInside && component.Entity.GetType() != typeof(CollectablePointer));
+                }
+            }
         }
 
         private static void HeartGemOnCtor_EntityData_Vector2(On.Celeste.HeartGem.orig_ctor_EntityData_Vector2 orig,
