@@ -30,10 +30,13 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
         private static void LightingRendererOnBeforeRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
             if (cursor.TryGotoNext(MoveType.After, instruction => instruction.MatchLdfld<Solid>("DisableLightsInside"))) {
-                if (cursor.TryFindNext(out var cursors, instruction => instruction.OpCode == OpCodes.Ldloc_S)) {
+                // find a VertexLight local variable (which is cast from Component)
+                if (cursor.TryFindNext(out var cursors,
+                    instruction => instruction.OpCode.Name.ToLowerInvariant().StartsWith("ldloc") &&
+                        ((VariableReference) instruction.Operand).VariableType.Name == typeof(VertexLight).Name)) {
                     cursor.Emit(cursors[0].Next.OpCode, cursors[0].Next.Operand);
-                    cursor.EmitDelegate<Func<bool, Component, bool>>((disableLightsInside, component) =>
-                        disableLightsInside && component.Entity.GetType() != typeof(CollectablePointer));
+                    cursor.EmitDelegate<Func<bool, VertexLight, bool>>((disableLightsInside, vertexLight) =>
+                        disableLightsInside && vertexLight.Entity.GetType() != typeof(CollectablePointer));
                 }
             }
         }
