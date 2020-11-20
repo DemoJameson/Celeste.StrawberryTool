@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Linq;
 using Celeste.Mod.StrawberryTool.Extension;
 using Microsoft.Xna.Framework;
@@ -14,6 +15,12 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             On.Celeste.Cassette.ctor_EntityData_Vector2 += CassetteOnCtor_EntityData_Vector2;
             On.Monocle.Entity.RemoveSelf += EntityOnRemoveSelf;
             IL.Celeste.LightingRenderer.BeforeRender += LightingRendererOnBeforeRender;
+
+            // update pointers while level is transitioning
+            // not using Tags.TransitionUpdate in CollectableConfig is because entity.Update() is called before
+            // the camera moves, thus what we get in level.Camera.Position is actually the value at last frame,
+            // and it will cause some visual glitches
+            On.Celeste.Level.TransitionRoutine += LevelOnTransitionRoutine;
         }
 
         public static void Unload() {
@@ -22,6 +29,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             On.Celeste.Cassette.ctor_EntityData_Vector2 -= CassetteOnCtor_EntityData_Vector2;
             On.Monocle.Entity.RemoveSelf -= EntityOnRemoveSelf;
             IL.Celeste.LightingRenderer.BeforeRender -= LightingRendererOnBeforeRender;
+            On.Celeste.Level.TransitionRoutine -= LevelOnTransitionRoutine;
         }
 
         // replace if (item.DisableLightsInside)
@@ -80,6 +88,15 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 CollectableConfig.All.Find(item => item.ShouldBeAdded(level, entityData));
             if (collectableConfig != null) {
                 level.Add(new CollectablePointer(entityData, collectableConfig));
+            }
+        }
+
+        private static IEnumerator LevelOnTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self,
+            LevelData next, Vector2 direction) {
+            IEnumerator enumerator = orig(self, next, direction);
+            while (enumerator.MoveNext()) {
+                self.Tracker.GetEntities<CollectablePointer>().ForEach(i => i.Update());
+                yield return enumerator.Current;
             }
         }
     }

@@ -34,6 +34,8 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             Position = this.followerPosition = EntityData.Position +
                                                new Vector2(EntityData.Level.Bounds.Left, EntityData.Level.Bounds.Top);
 
+            // since we have manually force the pointers update while level transitions,
+            // Tags.TransitionUpdate is not needed to prevent pointers update for second time
             Tag = Tags.Persistent;
             Depth = Depths.Top;
 
