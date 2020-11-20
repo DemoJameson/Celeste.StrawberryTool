@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Celeste.Mod.Entities;
 using Celeste.Mod.StrawberryTool.Extension;
 using Monocle;
 using Camera = IL.Monocle.Camera;
@@ -17,12 +18,11 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 ShouldBeAdded = (level, data) => {
                     Session session = level.Session;
                     switch (data.Name) {
-                        case "strawberry":
-                            return true;
                         case "memorialTextController":
                             return session.Dashes == 0 && session.StartedFromBeginning;
                         default:
-                            return false;
+                            // includes "strawberry" and custom entities with [RegisterStrawberry(tracked: true)]
+                            return StrawberryRegistry.TrackableContains(data.Name);
                     }
                 },
                 Scale = 0.7f,
