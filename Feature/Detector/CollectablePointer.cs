@@ -164,7 +164,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
             sprite.Color = Color.White * alpha * (Settings.ShowIcon ? 1 : 0) * (collectableInCameraView ? 0 : 1);
 
-            if (alpha > 0 && Settings.ShowIcon && Settings.ShowIconAtScreenEdge) {
+            if (alpha > 0 && Settings.ShowIcon && Settings.ShowIconAtScreenEdge && !collectableInCameraView) {
                 light.Visible = bloom.Visible = true;
             }
 
