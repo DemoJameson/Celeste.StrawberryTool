@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using Microsoft.Xna.Framework;
 using Monocle;
 
 namespace Celeste.Mod.StrawberryTool.Extension {
     public static class CameraExtension {
-        public static Vector2 GetIntersectionPoint(this Camera camera, Vector2 start, Vector2 end, float margin = 0f) {
+        public static Vector2? GetIntersectionPoint(this Camera camera, Vector2 start, Vector2 end, float margin = 0f) {
             float marginX = Math.Min(camera.Viewport.Width / 2f, margin);
             float marginY = Math.Min(camera.Viewport.Height / 2f, margin);
             Vector2 marginVector = new Vector2(marginX, marginY);
@@ -17,14 +17,14 @@ namespace Celeste.Mod.StrawberryTool.Extension {
             };
 
             for (int i = 0; i < borderPoints.Length; i++) {
-                Vector2 result = FindIntersection(borderPoints[i], borderPoints[(i + 1) % borderPoints.Length],
+                Vector2? result = FindIntersection(borderPoints[i], borderPoints[(i + 1) % borderPoints.Length],
                     start, end);
-                if (!result.Equals(default)) {
+                if (result != null) {
                     return result;
                 }
             }
 
-            return default;
+            return null;
         }
 
         public static Vector2 Center(this Camera camera) {
@@ -47,10 +47,8 @@ namespace Celeste.Mod.StrawberryTool.Extension {
             return new Vector2(camera.Right, camera.Bottom);
         }
 
-        private static Vector2 FindIntersection(
+        private static Vector2? FindIntersection(
             Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4) {
-            Vector2 intersection = default;
-
             // Get the segments' parameters.
             float dx12 = p2.X - p1.X;
             float dy12 = p2.Y - p1.Y;
@@ -65,13 +63,13 @@ namespace Celeste.Mod.StrawberryTool.Extension {
                 / denominator;
             if (float.IsInfinity(t1)) {
                 // The lines are parallel (or close enough to it).
-                return default;
+                return null;
             }
 
             float t2 = ((p3.X - p1.X) * dy12 + (p1.Y - p3.Y) * dx12) / -denominator;
 
             // Find the point of intersection.
-            intersection = new Vector2(p1.X + dx12 * t1, p1.Y + dy12 * t1);
+            Vector2 intersection = new Vector2(p1.X + dx12 * t1, p1.Y + dy12 * t1);
 
             // The segments intersect if t1 and t2 are between 0 and 1.
             bool segments_intersect = t1 >= 0 && t1 <= 1 && t2 >= 0 && t2 <= 1;
@@ -80,7 +78,7 @@ namespace Celeste.Mod.StrawberryTool.Extension {
                 return intersection;
             }
 
-            return default;
+            return null;
         }
     }
 }

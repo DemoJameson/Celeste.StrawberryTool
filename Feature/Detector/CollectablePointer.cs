@@ -27,6 +27,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
         private Level level;
         private VertexLight light;
         private BloomPoint bloom;
+        private bool collectableInCameraView;
 
         public CollectablePointer(EntityData followerPosition, CollectableConfig collectableConfig) {
             EntityData = followerPosition;
@@ -80,7 +81,9 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             }
 
             if (Settings.ShowIconAtScreenEdge) {
-                Position = GetCameraEdgePosition(level.Camera.Center());
+                Vector2? position = GetCameraEdgePosition(level.Camera.Center());
+                collectableInCameraView = (position == null);
+                Position = position ?? followerPosition;
             } else {
                 Position = GetAroundPlayerPosition(player, IconLength);
             }
@@ -159,7 +162,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
             lastAlpha = alpha;
 
-            sprite.Color = Color.White * alpha * (Settings.ShowIcon ? 1 : 0);
+            sprite.Color = Color.White * alpha * (Settings.ShowIcon ? 1 : 0) * (collectableInCameraView ? 0 : 1);
 
             if (alpha > 0 && Settings.ShowIcon && Settings.ShowIconAtScreenEdge) {
                 light.Visible = bloom.Visible = true;
@@ -195,7 +198,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 .Round();
         }
 
-        private Vector2 GetCameraEdgePosition(Vector2 position) {
+        private Vector2? GetCameraEdgePosition(Vector2 position) {
             return level.Camera.GetIntersectionPoint(position, followerPosition, 5f);
         }
 
