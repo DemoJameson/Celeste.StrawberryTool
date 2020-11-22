@@ -1,27 +1,27 @@
-﻿using Microsoft.Xna.Framework;
+using System;
+using Microsoft.Xna.Framework;
 using Monocle;
 
 namespace Celeste.Mod.StrawberryTool.Extension {
     public static class CameraExtension {
         public static Vector2 GetIntersectionPoint(this Camera camera, Vector2 start, Vector2 end, float margin = 0f) {
-            Vector2 result = FindIntersection(camera.TopLeft(), camera.BottomLeft(), start, end);
-            if (!result.Equals(default)) {
-                return result + Vector2.UnitX * margin;
-            }
-            
-            result = FindIntersection(camera.TopRight(), camera.BottomRight(), start, end);
-            if (!result.Equals(default)) {
-                return result - Vector2.UnitX * margin;
-            }
-            
-            result = FindIntersection(camera.TopLeft(), camera.TopRight(), start, end);
-            if (!result.Equals(default)) {
-                return result + Vector2.UnitY * margin;
-            }
-            
-            result = FindIntersection(camera.BottomLeft(), camera.BottomRight(), start, end);
-            if (!result.Equals(default)) {
-                return result - Vector2.UnitY * margin;
+            float marginX = Math.Min(camera.Viewport.Width / 2f, margin);
+            float marginY = Math.Min(camera.Viewport.Height / 2f, margin);
+            Vector2 marginVector = new Vector2(marginX, marginY);
+
+            Vector2[] borderPoints = {
+                camera.TopLeft() + marginVector * new Vector2(1f, 1f),
+                camera.TopRight() + marginVector * new Vector2(-1f, 1f),
+                camera.BottomRight() + marginVector * new Vector2(-1f, -1f),
+                camera.BottomLeft() + marginVector * new Vector2(1f, -1f)
+            };
+
+            for (int i = 0; i < borderPoints.Length; i++) {
+                Vector2 result = FindIntersection(borderPoints[i], borderPoints[(i + 1) % borderPoints.Length],
+                    start, end);
+                if (!result.Equals(default)) {
+                    return result;
+                }
             }
 
             return default;
