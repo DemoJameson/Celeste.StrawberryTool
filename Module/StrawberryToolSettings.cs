@@ -69,6 +69,10 @@ namespace Celeste.Mod.StrawberryTool.Module {
         [SettingIgnore] public int MaxPointers { get; set; } = 1;
         [SettingIgnore] public bool DetectCurrentRoom { get; set; } = true;
         [SettingIgnore] public bool DetectCollected { get; set; } = true;
+        [SettingIgnore] public bool DetectStrawberries { get; set; } = true;
+        [SettingIgnore] public bool DetectKeys { get; set; } = true;
+        [SettingIgnore] public bool DetectCassettes { get; set; } = true;
+        [SettingIgnore] public bool DetectHeartGems { get; set; } = true;
 
         public string Detector { get; set; } = string.Empty;
 

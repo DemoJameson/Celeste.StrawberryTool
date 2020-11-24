@@ -21,5 +21,9 @@ namespace Celeste.Mod.StrawberryTool.UI {
         public const string MaxPointers = "STRAWBERRY_TOOL_MAX_POINTERS";
         public const string DetectCurrentRoom = "STRAWBERRY_TOOL_DETECT_CURRENT_ROOM";
         public const string DetectCollected = "STRAWBERRY_TOOL_DETECT_COLLECTED";
+        public const string DetectStrawberries = "STRAWBERRY_TOOL_DETECT_STRAWBERRIES";
+        public const string DetectKeys = "STRAWBERRY_TOOL_DETECT_KEYS";
+        public const string DetectCassettes = "STRAWBERRY_TOOL_DETECT_CASSETTES";
+        public const string DetectHeartGems = "STRAWBERRY_TOOL_DETECT_HEART_GEMS";
     }
 }

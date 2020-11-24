@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Celeste.Mod.Entities;
 using Celeste.Mod.StrawberryTool.Extension;
+using Celeste.Mod.StrawberryTool.Module;
 using Monocle;
 using Camera = IL.Monocle.Camera;
 
 namespace Celeste.Mod.StrawberryTool.Feature.Detector {
     public class CollectableConfig {
+        private static StrawberryToolSettings Settings => StrawberryToolModule.Settings;
+
         public Func<Level, EntityData, bool> ShouldBeAdded;
         public float Scale;
         public Func<Level, EntityData, Sprite> GetSprite;
         public Func<EntityData, bool> HasCollected;
+        public Func<bool> ShouldDetect;
 
         public static readonly List<CollectableConfig> All = new List<CollectableConfig> {
             new CollectableConfig {
@@ -52,7 +56,8 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
                     return sprite;
                 },
-                HasCollected = data => SaveData.Instance.CheckStrawberry(data.ToEntityID())
+                HasCollected = data => SaveData.Instance.CheckStrawberry(data.ToEntityID()),
+                ShouldDetect = () => Settings.DetectStrawberries
             },
 
             new CollectableConfig {
@@ -60,12 +65,14 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 Scale = 0.6f,
                 GetSprite = (level, entity) => GFX.SpriteBank.Create("key"),
                 HasCollected = data => false,
+                ShouldDetect = () => Settings.DetectKeys
             },
 
             new CollectableConfig {
                 ShouldBeAdded = (level, data) => data.Name == "cassette",
                 Scale = 0.4f,
                 HasCollected = data => SaveData.Instance.Areas[(Engine.Scene as Level).Session.Area.ID].Cassette,
+                ShouldDetect = () => Settings.DetectCassettes
             }.With(config =>
                 config.GetSprite = delegate(Level level, EntityData data) {
                     string id = config.HasCollected(data) ? "cassetteGhost" : "cassette";
@@ -80,6 +87,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                     AreaKey area = (Engine.Scene as Level).Session.Area;
                     return !data.Bool("fake") && SaveData.Instance.Areas_Safe[area.ID].Modes[(int) area.Mode].HeartGem;
                 },
+                ShouldDetect = () => Settings.DetectHeartGems
             }.With(config =>
                 config.GetSprite = delegate(Level level, EntityData data) {
                     AreaKey area = (Engine.Scene as Level).Session.Area;
