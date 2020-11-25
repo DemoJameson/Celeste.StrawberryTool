@@ -20,32 +20,24 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
         public static readonly List<CollectableConfig> All = new List<CollectableConfig> {
             new CollectableConfig {
                 ShouldBeAdded = (level, data) => {
-                    Session session = level.Session;
-                    switch (data.Name) {
-                        case "memorialTextController":
-                            return session.Dashes == 0 && session.StartedFromBeginning;
-                        default:
-                            // includes "strawberry" and custom entities with [RegisterStrawberry(tracked: true)]
-                            return StrawberryRegistry.TrackableContains(data.Name);
-                    }
+                    // strawberries, moon berries, custom entities with [RegisterStrawberry(tracked: true)]
+                    return StrawberryRegistry.TrackableContains(data.Name);
                 },
                 Scale = 0.7f,
                 GetSprite = (level, data) => {
                     string spriteId;
-                    bool golden = data.Name == "memorialTextController" || data.Name == "goldenBerry";
                     bool moon = data.Bool("moon");
-                    bool seed = data.Nodes != null && data.Nodes.Length != 0;
                     if (SaveData.Instance.CheckStrawberry(data.ToEntityID())) {
                         if (moon) {
                             spriteId = "moonghostberry";
                         } else {
-                            spriteId = golden ? "goldghostberry" : "ghostberry";
+                            spriteId = "ghostberry";
                         }
                     } else {
                         if (moon) {
                             spriteId = "moonberry";
                         } else {
-                            spriteId = golden ? "goldberry" : "strawberry";
+                            spriteId = "strawberry";
                         }
                     }
 
@@ -58,6 +50,42 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 },
                 HasCollected = data => SaveData.Instance.CheckStrawberry(data.ToEntityID()),
                 ShouldDetect = () => Settings.DetectStrawberries
+            },
+
+            new CollectableConfig {
+                ShouldBeAdded = (level, data) => {
+                    Session session = level.Session;
+                    switch (data.Name) {
+                        case "goldenBerry":
+                            bool cheatMode = SaveData.Instance.CheatMode;
+                            bool initialState = session.FurthestSeenLevel == data.Level.Name || session.Deaths == 0;
+                            bool unlockGolden = SaveData.Instance.UnlockedModes >= 3 || SaveData.Instance.DebugMode;
+                            bool completed = SaveData.Instance.Areas[session.Area.ID].Modes[(int) session.Area.Mode].Completed;
+                            return (cheatMode || completed && unlockGolden) && initialState;
+                        case "memorialTextController":
+                            return session.Dashes == 0 && session.StartedFromBeginning;
+                        default:
+                            return false;
+                    }
+                },
+                Scale = 0.7f,
+                GetSprite = (level, data) => {
+                    string spriteId;
+                    if (SaveData.Instance.CheckStrawberry(data.ToEntityID())) {
+                        spriteId = "goldghostberry";
+                    } else {
+                        spriteId = "goldberry";
+                    }
+
+                    Sprite sprite = GFX.SpriteBank.Create(spriteId);
+                    if (data.Bool("winged") || data.Name == "memorialTextController") {
+                        sprite.Play("flap");
+                    }
+
+                    return sprite;
+                },
+                HasCollected = data => SaveData.Instance.CheckStrawberry(data.ToEntityID()),
+                ShouldDetect = () => Settings.DetectGoldenStrawberries
             },
 
             new CollectableConfig {

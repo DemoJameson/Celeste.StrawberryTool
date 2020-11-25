@@ -93,6 +93,12 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 return;
             }
 
+            bool isSessionDashless = level.Session.Dashes == 0 && level.Session.StartedFromBeginning;
+            if (EntityData.Name == "memorialTextController" && !isSessionDashless) {
+                fade = 0f;
+                return;
+            }
+
             bool follow = player.Leader.Followers.Any(follower => {
                 switch (follower.Entity) {
                     case Strawberry berry:

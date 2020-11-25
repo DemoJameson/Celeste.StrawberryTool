@@ -49,6 +49,9 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             menu.Add(new TextMenu.OnOff(DialogIds.DetectStrawberries.DialogClean(), Settings.DetectStrawberries)
                 .Change(value => Settings.DetectStrawberries = value));
             
+            menu.Add(new TextMenu.OnOff(DialogIds.DetectGoldenStrawberries.DialogClean(), Settings.DetectGoldenStrawberries)
+                .Change(value => Settings.DetectGoldenStrawberries = value));
+            
             menu.Add(new TextMenu.OnOff(DialogIds.DetectKeys.DialogClean(), Settings.DetectKeys)
                 .Change(value => Settings.DetectKeys = value));
             

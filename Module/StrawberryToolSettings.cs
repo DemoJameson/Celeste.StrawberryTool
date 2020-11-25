@@ -70,6 +70,7 @@ namespace Celeste.Mod.StrawberryTool.Module {
         [SettingIgnore] public bool DetectCurrentRoom { get; set; } = true;
         [SettingIgnore] public bool DetectCollected { get; set; } = true;
         [SettingIgnore] public bool DetectStrawberries { get; set; } = true;
+        [SettingIgnore] public bool DetectGoldenStrawberries { get; set; } = true;
         [SettingIgnore] public bool DetectKeys { get; set; } = true;
         [SettingIgnore] public bool DetectCassettes { get; set; } = true;
         [SettingIgnore] public bool DetectHeartGems { get; set; } = true;
