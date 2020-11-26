@@ -5,9 +5,12 @@
   <pages>
     <page id="0" file="chinese_strawberry_tool_0.png" />
   </pages>
-  <chars count="3">
-    <char id="28176" x="0" y="0" width="40" height="40" xoffset="1" yoffset="14" xadvance="43" page="0" chnl="15" />
-    <char id="33539" x="41" y="0" width="40" height="40" xoffset="2" yoffset="14" xadvance="43" page="0" chnl="15" />
-    <char id="38024" x="82" y="0" width="40" height="40" xoffset="1" yoffset="14" xadvance="43" page="0" chnl="15" />
+  <chars count="6">
+    <char id="21273" x="0" y="0" width="41" height="40" xoffset="1" yoffset="14" xadvance="43" page="0" chnl="15" />
+    <char id="28176" x="42" y="0" width="40" height="40" xoffset="1" yoffset="14" xadvance="43" page="0" chnl="15" />
+    <char id="30913" x="205" y="0" width="41" height="39" xoffset="1" yoffset="14" xadvance="43" page="0" chnl="15" />
+    <char id="33539" x="83" y="0" width="40" height="40" xoffset="2" yoffset="14" xadvance="43" page="0" chnl="15" />
+    <char id="38024" x="124" y="0" width="40" height="40" xoffset="1" yoffset="14" xadvance="43" page="0" chnl="15" />
+    <char id="38053" x="165" y="0" width="39" height="40" xoffset="1" yoffset="14" xadvance="43" page="0" chnl="15" />
   </chars>
 </font>

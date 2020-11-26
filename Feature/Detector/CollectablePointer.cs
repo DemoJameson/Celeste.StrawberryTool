@@ -93,6 +93,12 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 return;
             }
 
+            bool isSessionDashless = level.Session.Dashes == 0 && level.Session.StartedFromBeginning;
+            if (EntityData.Name == "memorialTextController" && !isSessionDashless) {
+                fade = 0f;
+                return;
+            }
+
             bool follow = player.Leader.Followers.Any(follower => {
                 switch (follower.Entity) {
                     case Strawberry berry:
@@ -151,10 +157,13 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 alpha = 1f;
             }
 
-            var list = level.Entities.FindAll<CollectablePointer>();
+            var list = level.Entities
+                .FindAll<CollectablePointer>()
+                .FindAll(pointer => pointer.collectableConfig.ShouldDetect());
             int currentRoomCounts = list.Count(pointer => level.Session.LevelData == pointer.EntityData.Level);
             list.Sort((pointer, collectablePointer) => Math.Sign(collectablePointer.Alpha - pointer.Alpha));
-            if (list.IndexOf(this) >= Settings.MaxPointers - (Settings.DetectCurrentRoom ? 0 : currentRoomCounts)) {
+            int index = list.IndexOf(this);
+            if (index == -1 || index >= Settings.MaxPointers - (Settings.DetectCurrentRoom ? 0 : currentRoomCounts)) {
                 alpha = 0;
             }
 
