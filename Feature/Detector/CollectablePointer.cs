@@ -25,8 +25,6 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
         private float transitionFade = 1f;
         private float fade = 1f;
         private Level level;
-        private VertexLight light;
-        private BloomPoint bloom;
         private bool collectableInCameraView;
 
         public CollectablePointer(EntityData followerPosition, CollectableConfig collectableConfig) {
@@ -37,7 +35,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
             // since we have manually force the pointers update while level transitions,
             // Tags.TransitionUpdate is not needed to prevent pointers update for second time
-            Tag = Tags.Persistent;
+            Tag = Tags.Persistent | TagsExtension.CollectablePointer;
             Depth = Depths.Top;
 
             arrowImages = GFX.Game.GetAtlasSubtextures("util/strawberry_tool_arrow/strawberry_tool_arrow");
@@ -60,8 +58,6 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             sprite = collectableConfig.GetSprite(level, EntityData);
             sprite.Scale = Vector2.One * collectableConfig.Scale;
             Add(sprite);
-            Add(light = new VertexLight(Color.White, 1f, 12, 12));
-            Add(bloom = new BloomPoint(0.5f, 6f));
         }
 
         public override void Update() {
@@ -116,8 +112,6 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
         }
 
         public override void Render() {
-            light.Visible = bloom.Visible = false;
-
             if (!Settings.Enabled || !Settings.DetectorEnabled) {
                 return;
             }
@@ -172,10 +166,6 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             lastAlpha = alpha;
 
             sprite.Color = Color.White * alpha * (Settings.ShowIcon ? 1 : 0) * (collectableInCameraView ? 0 : 1);
-
-            if (alpha > 0 && Settings.ShowIcon && Settings.ShowIconAtScreenEdge && !collectableInCameraView) {
-                light.Visible = bloom.Visible = true;
-            }
 
             if (!Settings.ShowPointer) {
                 return;

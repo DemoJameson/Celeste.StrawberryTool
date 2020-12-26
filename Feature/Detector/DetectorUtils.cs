@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using Celeste.Mod.StrawberryTool.Extension;
 using Microsoft.Xna.Framework;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
@@ -14,13 +15,18 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             On.Celeste.HeartGem.ctor_EntityData_Vector2 += HeartGemOnCtor_EntityData_Vector2;
             On.Celeste.Cassette.ctor_EntityData_Vector2 += CassetteOnCtor_EntityData_Vector2;
             On.Monocle.Entity.RemoveSelf += EntityOnRemoveSelf;
-            IL.Celeste.LightingRenderer.BeforeRender += LightingRendererOnBeforeRender;
 
             // update pointers while level is transitioning
-            // not using Tags.TransitionUpdate in CollectableConfig is because entity.Update() is called before
+            // not using Tags.TransitionUpdate in CollectablePointer is because entity.Update() is called before
             // the camera moves, thus what we get in level.Camera.Position is actually the value at last frame,
             // and it will cause some visual glitches
             On.Celeste.Level.TransitionRoutine += LevelOnTransitionRoutine;
+
+            // render CollectablePointer after level lighting, so pointers will always be visible even room lighting is 0%
+            IL.Celeste.Level.Render += LevelOnRender;
+            On.Celeste.Tags.Initialize += TagsOnInitialize;
+            On.Celeste.LevelLoader.LoadingThread += LevelLoaderOnLoadingThread;
+            IL.Celeste.GameplayRenderer.Render += GameplayRendererOnRender;
         }
 
         public static void Unload() {
@@ -28,25 +34,11 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             On.Celeste.HeartGem.ctor_EntityData_Vector2 -= HeartGemOnCtor_EntityData_Vector2;
             On.Celeste.Cassette.ctor_EntityData_Vector2 -= CassetteOnCtor_EntityData_Vector2;
             On.Monocle.Entity.RemoveSelf -= EntityOnRemoveSelf;
-            IL.Celeste.LightingRenderer.BeforeRender -= LightingRendererOnBeforeRender;
             On.Celeste.Level.TransitionRoutine -= LevelOnTransitionRoutine;
-        }
-
-        // replace if (item.DisableLightsInside)
-        // to      if (item.DisableLightsInside && component.Entity.GetType() != typeof(CollectablePointer)
-        // make CollectablePointer light inside foreground tiles.
-        private static void LightingRendererOnBeforeRender(ILContext il) {
-            ILCursor cursor = new ILCursor(il);
-            if (cursor.TryGotoNext(MoveType.After, instruction => instruction.MatchLdfld<Solid>("DisableLightsInside"))) {
-                // find a VertexLight local variable (which is cast from Component)
-                if (cursor.TryFindNext(out var cursors,
-                    instruction => instruction.OpCode.Name.ToLowerInvariant().StartsWith("ldloc") &&
-                        ((VariableReference) instruction.Operand).VariableType.Name == typeof(VertexLight).Name)) {
-                    cursor.Emit(cursors[0].Next.OpCode, cursors[0].Next.Operand);
-                    cursor.EmitDelegate<Func<bool, VertexLight, bool>>((disableLightsInside, vertexLight) =>
-                        disableLightsInside && vertexLight.Entity.GetType() != typeof(CollectablePointer));
-                }
-            }
+            IL.Celeste.Level.Render -= LevelOnRender;
+            On.Celeste.Tags.Initialize -= TagsOnInitialize;
+            On.Celeste.LevelLoader.LoadingThread -= LevelLoaderOnLoadingThread;
+            IL.Celeste.GameplayRenderer.Render -= GameplayRendererOnRender;
         }
 
         private static void HeartGemOnCtor_EntityData_Vector2(On.Celeste.HeartGem.orig_ctor_EntityData_Vector2 orig,
@@ -97,6 +89,51 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             while (enumerator.MoveNext()) {
                 self.Tracker.GetEntities<CollectablePointer>().ForEach(i => i.Update());
                 yield return enumerator.Current;
+            }
+        }
+
+        private static void TagsOnInitialize(On.Celeste.Tags.orig_Initialize orig) {
+            orig();
+            TagsExtension.CollectablePointer = new BitTag("collectablePointer");
+        }
+
+        private static void LevelOnRender(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // move after this.Lighting.Render(this);
+            if (cursor.TryGotoNext(
+                MoveType.After,
+                instr => instr.MatchLdarg(0),
+                instr => instr.MatchLdfld(typeof(Level), nameof(Level.Lighting)),
+                instr => instr.MatchLdarg(0),
+                instr => instr.MatchCallvirt(typeof(Renderer), nameof(Renderer.Render)))
+            ) {
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.EmitDelegate<Action<Level>>(level => {
+                    CollectablePointerRenderer.Instance?.Render(level);
+                });
+            }
+        }
+
+        private static void LevelLoaderOnLoadingThread(On.Celeste.LevelLoader.orig_LoadingThread orig, LevelLoader self) {
+            orig(self);
+            self.Level.Add(new CollectablePointerRenderer());
+        }
+
+        private static void GameplayRendererOnRender(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            if (cursor.TryGotoNext(
+                MoveType.After,
+                instr => instr.MatchLdsfld(typeof(TagsExt), nameof(TagsExt.SubHUD)),
+                instr => instr.OpCode == OpCodes.Call &&
+                    (instr.Operand as MethodReference)?.FullName == "System.Int32 Monocle.BitTag::op_Implicit(Monocle.BitTag)",
+                instr => instr.MatchOr())
+            ) {
+                // change scene.Entities.RenderExcept(Tags.HUD | TagsExt.SubHUD);
+                // to     scene.Entities.RenderExcept(Tags.HUD | TagsExt.SubHUD | TagsExtension.CollectablePointer);
+                cursor.EmitDelegate<Func<int>>(() => TagsExtension.CollectablePointer);
+                cursor.Emit(OpCodes.Or);
             }
         }
     }

@@ -79,11 +79,13 @@
         <Compile Include="Extension\EntityExtension.cs" />
         <Compile Include="Extension\CameraExtension.cs" />
         <Compile Include="Extension\SimpleExtension.cs" />
+        <Compile Include="Extension\TagsExtension.cs" />
         <Compile Include="Extension\Vector2Extension.cs" />
         <Compile Include="Feature\Detector\CollectableConfig.cs" />
         <Compile Include="Feature\Detector\DetectorUtils.cs" />
         <Compile Include="Feature\Detector\CollectablePointer.cs" />
         <Compile Include="Feature\Detector\OuiDetectorSubmenu.cs" />
+        <Compile Include="Feature\Detector\CollectablePointerRenderer.cs" />
         <Compile Include="Feature\Translucent\OuiTranslucentSubmenu.cs" />
         <Compile Include="Feature\Translucent\TranslucentUtils.cs" />
         <Compile Include="Module\StrawberryToolModule.cs" />
