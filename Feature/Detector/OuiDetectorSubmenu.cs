@@ -60,6 +60,9 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             
             menu.Add(new TextMenu.OnOff(DialogIds.DetectHeartGems.DialogClean(), Settings.DetectHeartGems)
                 .Change(value => Settings.DetectHeartGems = value));
+            
+            menu.Add(new TextMenu.OnOff(DialogIds.DetectSummitGems.DialogClean(), Settings.DetectSummitGems)
+                .Change(value => Settings.DetectSummitGems = value));
         }
 
         protected override void gotoMenu(Overworld overworld) {

@@ -56,3 +56,4 @@ STRAWBERRY_TOOL_DETECT_GOLDEN_STRAWBERRIES=     Detect Golden Strawberries
 STRAWBERRY_TOOL_DETECT_KEYS=                    Detect Keys
 STRAWBERRY_TOOL_DETECT_CASSETTES=               Detect Cassettes
 STRAWBERRY_TOOL_DETECT_HEART_GEMS=              Detect Heart Gems
+STRAWBERRY_TOOL_DETECT_SUMMIT_GEMS=             Detect Summit Gems
