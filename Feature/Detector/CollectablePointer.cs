@@ -147,7 +147,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
             Alpha = alpha;
 
-            if (!Settings.OpacityGradient) {
+            if (!Settings.OpacityGradient && !(!Settings.DetectCurrentRoom && level.Session.LevelData == EntityData.Level)) {
                 alpha = 1f;
             }
 
