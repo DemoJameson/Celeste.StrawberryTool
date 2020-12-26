@@ -97,7 +97,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             },
 
             new CollectableConfig {
-                ShouldBeAdded = (level, data) => data.Name == "cassette",
+                ShouldBeAdded = (level, data) => data.Name == "cassette" && !level.Session.Cassette,
                 Scale = 0.4f,
                 HasCollected = data => SaveData.Instance.Areas[(Engine.Scene as Level).Session.Area.ID].Cassette,
                 ShouldDetect = () => Settings.DetectCassettes
