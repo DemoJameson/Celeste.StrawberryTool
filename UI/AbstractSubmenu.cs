@@ -135,15 +135,8 @@ namespace Celeste.Mod.StrawberryTool.UI {
         }
 
         private static T getOrInstantiateSubmenu<T>() where T : AbstractSubmenu {
-            if (OuiModOptions.Instance?.Overworld == null) {
+            if (OuiModOptions.Instance?.Overworld.GetUI<T>() == null) {
                 return (T) Activator.CreateInstance(typeof(T));
-            }
-            if (OuiModOptions.Instance.Overworld.GetUI<T>() == null) {
-                Overworld overworld = OuiModOptions.Instance.Overworld;
-                Oui instance = (Oui) Activator.CreateInstance(typeof(T));
-                instance.Visible = false;
-                overworld.Add(instance);
-                overworld.UIs.Add(instance);
             }
             return OuiModOptions.Instance.Overworld.GetUI<T>();
         }
