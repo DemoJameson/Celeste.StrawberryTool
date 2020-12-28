@@ -35,7 +35,8 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
             // since we have manually force the pointers update while level transitions,
             // Tags.TransitionUpdate is not needed to prevent pointers update for second time
-            Tag = Tags.Persistent | TagsExtension.CollectablePointer;
+            // Tags.Global fixes pointers disappeared after teleporting (for example, in Glyph and beginning of Farewell)
+            Tag = Tags.Global | TagsExtension.CollectablePointer;
             Depth = Depths.Top;
 
             arrowImages = GFX.Game.GetAtlasSubtextures("util/strawberry_tool_arrow/strawberry_tool_arrow");

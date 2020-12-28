@@ -68,7 +68,10 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
         private static void LevelOnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self,
             Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
-            if (!isFromLoader && playerIntro != Player.IntroTypes.Respawn) return;
+            if (!isFromLoader && playerIntro != Player.IntroTypes.Respawn)
+                return;
+            // entities with Tags.Global will not be removed after level reloading, so we need to remove them manually
+            self.Entities.Remove(self.Entities.FindAll<CollectablePointer>());
             var entities = self.Session.MapData.Levels.SelectMany(data => data.Entities);
             foreach (EntityData entityData in entities) {
                 TryAddPointer(self, entityData);
