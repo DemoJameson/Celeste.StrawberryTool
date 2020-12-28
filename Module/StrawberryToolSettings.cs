@@ -13,18 +13,18 @@ namespace Celeste.Mod.StrawberryTool.Module {
                     Enabled = value;
 
                     bool mineItem = false;
-                    int mindItemsCount = 2;
+                    int mineItemsCount = 2;
                     foreach (TextMenu.Item item in menu.Items) {
                         if (item == menu.Current && !mineItem) {
                             mineItem = true;
                             continue;
                         }
 
-                        if (!mineItem || mindItemsCount <= 0) {
+                        if (!mineItem || mineItemsCount <= 0) {
                             continue;
                         }
 
-                        mindItemsCount--;
+                        mineItemsCount--;
                         item.Visible = value;
                     }
                 }
@@ -48,6 +48,7 @@ namespace Celeste.Mod.StrawberryTool.Module {
         [SettingIgnore] public int TransparentRadius { get; set; } = 10;
         [SettingIgnore] public int TranslucentRadius { get; set; } = 60;
 
+        [SettingIgnore]
         public string Translucent { get; set; } = string.Empty;
 
         public void CreateTranslucentEntry(TextMenu menu, bool inGame) {
@@ -76,6 +77,7 @@ namespace Celeste.Mod.StrawberryTool.Module {
         [SettingIgnore] public bool DetectHeartGems { get; set; } = true;
         [SettingIgnore] public bool DetectSummitGems { get; set; } = true;
 
+        [SettingIgnore]
         public string Detector { get; set; } = string.Empty;
 
         public void CreateDetectorEntry(TextMenu menu, bool inGame) {

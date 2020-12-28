@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Celeste.Mod.StrawberryTool.Module;
 using Celeste.Mod.UI;
 using Microsoft.Xna.Framework;
@@ -130,18 +131,32 @@ namespace Celeste.Mod.StrawberryTool.UI {
         /// <returns>A button you can insert in another menu</returns>
         public static TextMenuButtonExt BuildOpenMenuButton<T>(TextMenu parentMenu, bool inGame)
             where T : AbstractSubmenu {
-            return OuiModOptions.Instance.Overworld.GetUI<T>()?.buildOpenMenuButton(parentMenu, inGame);
+            if (getOrInstantiateSubmenu<T>() == null) {
+                Overworld overworld = OuiModOptions.Instance.Overworld;
+                Oui instance = (Oui) Activator.CreateInstance(typeof(T));
+                    instance.Visible = false;
+                    overworld.Add(instance);
+                    overworld.UIs.Add(instance);
+            }
+            return getOrInstantiateSubmenu<T>().buildOpenMenuButton(parentMenu, inGame);
+        }
+
+        private static T getOrInstantiateSubmenu<T>() where T : AbstractSubmenu {
+            if (OuiModOptions.Instance?.Overworld == null) {
+                return (T) Activator.CreateInstance(typeof(T));
+            }
+            return OuiModOptions.Instance.Overworld.GetUI<T>();
         }
 
         /// <summary>
         ///     Method getting called on the Oui instance when the method just above is called.
         /// </summary>
+        ///
         private TextMenuButtonExt buildOpenMenuButton(TextMenu parentMenu, bool inGame) {
             if (inGame) {
-                Level level = Engine.Scene as Level;
-
                 // this is how it works in-game
                 return (TextMenuButtonExt) new TextMenuButtonExt(getButtonName()).Pressed(() => {
+                    Level level = Engine.Scene as Level;
                     // close the parent menu
                     parentMenu.RemoveSelf();
 
