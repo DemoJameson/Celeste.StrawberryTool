@@ -128,7 +128,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
             base.Render();
 
-            float alpha = Settings.DetectorOpacity / 10f;
+            float alpha = Settings.DetectorOpacity / 10f * fade * transitionFade;
             float distance = Vector2.Distance(followerPosition, Settings.ShowIconAtScreenEdge ? level.Camera.Center() : player.Position);
             float detectorRange = Settings.DetectorRange * 100;
 
@@ -148,11 +148,9 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
             Alpha = alpha;
 
-            if (!Settings.OpacityGradient && !(!Settings.DetectCurrentRoom && level.Session.LevelData == EntityData.Level)) {
+            if (!Settings.OpacityGradient && !(!Settings.DetectCurrentRoom && level.Session.LevelData == EntityData.Level) && fade > 0f) {
                 alpha = 1f;
             }
-
-            alpha *= fade * transitionFade;
 
             var list = level.Entities
                 .FindAll<CollectablePointer>()
