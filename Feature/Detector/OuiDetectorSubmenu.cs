@@ -11,7 +11,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 .Change(value => Settings.DetectorEnabled = value));
 
             menu.Add(new TextMenu.Slider(DialogIds.DetectorOpacity.DialogClean(),
-                value => (value / 10f).ToString("0.0"), 1, 10,
+                value => $"{value * 10}%", 1, 10,
                 Settings.DetectorOpacity) {
                 OnValueChange = value => Settings.DetectorOpacity = value
             });
