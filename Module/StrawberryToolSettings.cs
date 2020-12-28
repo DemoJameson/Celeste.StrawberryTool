@@ -74,6 +74,7 @@ namespace Celeste.Mod.StrawberryTool.Module {
         [SettingIgnore] public bool DetectKeys { get; set; } = true;
         [SettingIgnore] public bool DetectCassettes { get; set; } = true;
         [SettingIgnore] public bool DetectHeartGems { get; set; } = true;
+        [SettingIgnore] public bool DetectSummitGems { get; set; } = true;
 
         public string Detector { get; set; } = string.Empty;
 

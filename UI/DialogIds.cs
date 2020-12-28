@@ -26,5 +26,6 @@ namespace Celeste.Mod.StrawberryTool.UI {
         public const string DetectKeys = "STRAWBERRY_TOOL_DETECT_KEYS";
         public const string DetectCassettes = "STRAWBERRY_TOOL_DETECT_CASSETTES";
         public const string DetectHeartGems = "STRAWBERRY_TOOL_DETECT_HEART_GEMS";
+        public const string DetectSummitGems = "STRAWBERRY_TOOL_DETECT_SUMMIT_GEMS";
     }
 }

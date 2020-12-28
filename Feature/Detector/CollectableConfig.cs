@@ -125,6 +125,21 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                     sprite.Play("spin");
                     return sprite;
                 }),
+
+            new CollectableConfig {
+                ShouldBeAdded = (level, data) => data.Name == "summitgem",
+                Scale = 0.6f,
+                GetSprite = (level, data) => {
+                    Sprite sprite = new Sprite(GFX.Game, "collectables/summitgems/" + data.Int("gem") + "/gem");
+                    sprite.AddLoop("idle", "", 0.08f);
+                    sprite.Play("idle");
+                    sprite.CenterOrigin();
+                    return sprite;
+                },
+                HasCollected = data =>
+                    SaveData.Instance.SummitGems != null && SaveData.Instance.SummitGems[data.Int("gem")],
+                ShouldDetect = () => Settings.DetectSummitGems
+            }
         };
     }
 }
