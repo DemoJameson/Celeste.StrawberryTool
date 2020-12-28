@@ -1,7 +1,9 @@
 - Name: StrawberryTool
-  Version: 0.4.0
+  Version: 1.0.0
   DLL: StrawberryTool.dll
-  Author: DemoJameson
+  Author:
+    - DemoJameson
+    - WEGFan
   Dependencies:
     - Name: Everest
       Version: 1.2259.0
