@@ -94,7 +94,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
         private static void TagsOnInitialize(On.Celeste.Tags.orig_Initialize orig) {
             orig();
-            TagsExtension.CollectablePointer = new BitTag("collectablePointer");
+            TagsExtension.InitCollectablePointer();
         }
 
         private static void LevelOnRender(ILContext il) {

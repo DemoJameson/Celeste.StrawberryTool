@@ -131,19 +131,19 @@ namespace Celeste.Mod.StrawberryTool.UI {
         /// <returns>A button you can insert in another menu</returns>
         public static TextMenuButtonExt BuildOpenMenuButton<T>(TextMenu parentMenu, bool inGame)
             where T : AbstractSubmenu {
-            if (getOrInstantiateSubmenu<T>() == null) {
-                Overworld overworld = OuiModOptions.Instance.Overworld;
-                Oui instance = (Oui) Activator.CreateInstance(typeof(T));
-                    instance.Visible = false;
-                    overworld.Add(instance);
-                    overworld.UIs.Add(instance);
-            }
             return getOrInstantiateSubmenu<T>().buildOpenMenuButton(parentMenu, inGame);
         }
 
         private static T getOrInstantiateSubmenu<T>() where T : AbstractSubmenu {
             if (OuiModOptions.Instance?.Overworld == null) {
                 return (T) Activator.CreateInstance(typeof(T));
+            }
+            if (OuiModOptions.Instance.Overworld.GetUI<T>() == null) {
+                Overworld overworld = OuiModOptions.Instance.Overworld;
+                Oui instance = (Oui) Activator.CreateInstance(typeof(T));
+                instance.Visible = false;
+                overworld.Add(instance);
+                overworld.UIs.Add(instance);
             }
             return OuiModOptions.Instance.Overworld.GetUI<T>();
         }

@@ -17,5 +17,9 @@ namespace Celeste.Mod.StrawberryTool.Extension {
             }
             set => _CollectablePointer = value;
         }
+
+        public static void InitCollectablePointer() {
+            CollectablePointer = new BitTag(TagName);
+        }
     }
 }
