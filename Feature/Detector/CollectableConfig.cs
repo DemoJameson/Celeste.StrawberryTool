@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Celeste.Mod.Entities;
 using Celeste.Mod.StrawberryTool.Extension;
 using Celeste.Mod.StrawberryTool.Module;
 using Monocle;
-using Camera = IL.Monocle.Camera;
 
 namespace Celeste.Mod.StrawberryTool.Feature.Detector {
     public class CollectableConfig {
@@ -14,7 +11,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
         public Func<Level, EntityData, bool> ShouldBeAdded;
         public float Scale;
         public Func<Level, EntityData, Sprite> GetSprite;
-        public Func<EntityData, bool> HasCollected;
+        public Func<Level, EntityData, bool> HasCollected;
         public Func<bool> ShouldDetect;
 
         public static readonly List<CollectableConfig> All = new List<CollectableConfig> {
@@ -48,7 +45,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
                     return sprite;
                 },
-                HasCollected = data => SaveData.Instance.CheckStrawberry(data.ToEntityID()),
+                HasCollected = (level, data) => SaveData.Instance.CheckStrawberry(data.ToEntityID()),
                 ShouldDetect = () => Settings.DetectStrawberries
             },
 
@@ -84,7 +81,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
                     return sprite;
                 },
-                HasCollected = data => SaveData.Instance.CheckStrawberry(data.ToEntityID()),
+                HasCollected = (level, data) => SaveData.Instance.CheckStrawberry(data.ToEntityID()),
                 ShouldDetect = () => Settings.DetectGoldenStrawberries
             },
 
@@ -92,18 +89,18 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 ShouldBeAdded = (level, data) => data.Name == "key",
                 Scale = 0.6f,
                 GetSprite = (level, entity) => GFX.SpriteBank.Create("key"),
-                HasCollected = data => false,
+                HasCollected = (level, data) => false,
                 ShouldDetect = () => Settings.DetectKeys
             },
 
             new CollectableConfig {
                 ShouldBeAdded = (level, data) => data.Name == "cassette" && !level.Session.Cassette,
                 Scale = 0.4f,
-                HasCollected = data => SaveData.Instance.Areas[(Engine.Scene as Level).Session.Area.ID].Cassette,
+                HasCollected = (level, data) => SaveData.Instance.Areas[level.Session.Area.ID].Cassette,
                 ShouldDetect = () => Settings.DetectCassettes
             }.With(config =>
-                config.GetSprite = delegate(Level level, EntityData data) {
-                    string id = config.HasCollected(data) ? "cassetteGhost" : "cassette";
+                config.GetSprite = (level, data) => {
+                    string id = config.HasCollected(level, data) ? "cassetteGhost" : "cassette";
                     return GFX.SpriteBank.Create(id);
                 }),
 
@@ -111,16 +108,16 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 ShouldBeAdded = (level, data) =>
                     data.Name == "blackGem" && (!level.Session.HeartGem || level.Session.Area.Mode != AreaMode.Normal),
                 Scale = 0.5f,
-                HasCollected = delegate(EntityData data) {
-                    AreaKey area = (Engine.Scene as Level).Session.Area;
+                HasCollected = (level, data) => {
+                    AreaKey area = level.Session.Area;
                     return !data.Bool("fake") && SaveData.Instance.Areas_Safe[area.ID].Modes[(int) area.Mode].HeartGem;
                 },
                 ShouldDetect = () => Settings.DetectHeartGems
             }.With(config =>
-                config.GetSprite = delegate(Level level, EntityData data) {
-                    AreaKey area = (Engine.Scene as Level).Session.Area;
+                config.GetSprite = (level, data) => {
+                    AreaKey area = level.Session.Area;
                     string id = data.Bool("fake") ? "heartgem3" :
-                        !config.HasCollected(data) ? "heartgem" + (int) area.Mode : "heartGemGhost";
+                        !config.HasCollected(level, data) ? "heartgem" + (int) area.Mode : "heartGemGhost";
                     Sprite sprite = GFX.SpriteBank.Create(id);
                     sprite.Play("spin");
                     return sprite;
@@ -136,7 +133,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                     sprite.CenterOrigin();
                     return sprite;
                 },
-                HasCollected = data =>
+                HasCollected = (level, data) =>
                     SaveData.Instance.SummitGems != null && SaveData.Instance.SummitGems[data.Int("gem")],
                 ShouldDetect = () => Settings.DetectSummitGems
             }

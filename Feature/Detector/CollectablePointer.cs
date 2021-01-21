@@ -107,7 +107,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 }
             });
 
-            bool collected = !Settings.DetectCollected && collectableConfig.HasCollected(EntityData);
+            bool collected = !Settings.DetectCollected && collectableConfig.HasCollected(level, EntityData);
 
             fade = follow || collected ? 0 : 1;
         }
