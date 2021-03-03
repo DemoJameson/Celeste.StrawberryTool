@@ -96,12 +96,12 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 return;
             }
 
-            if (level.Session.Cassette) {
+            if (EntityData.Name == "cassette" && level.Session.Cassette) {
                 fade = 0f;
                 return;
             }
 
-            if (level.Session.HeartGem && level.Session.Area.Mode == 0) {
+            if (EntityData.Name == "blackGem" && level.Session.HeartGem && level.Session.Area.Mode == 0) {
                 fade = 0f;
                 return;
             }
