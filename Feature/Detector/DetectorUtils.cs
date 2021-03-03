@@ -12,9 +12,6 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
     public static class DetectorUtils {
         public static void Load() {
             On.Celeste.Level.LoadLevel += LevelOnLoadLevel;
-            On.Celeste.HeartGem.ctor_EntityData_Vector2 += HeartGemOnCtor_EntityData_Vector2;
-            On.Celeste.Cassette.ctor_EntityData_Vector2 += CassetteOnCtor_EntityData_Vector2;
-            On.Monocle.Entity.RemoveSelf += EntityOnRemoveSelf;
 
             // update pointers while level is transitioning
             // not using Tags.TransitionUpdate in CollectablePointer is because entity.Update() is called before
@@ -31,38 +28,11 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
         public static void Unload() {
             On.Celeste.Level.LoadLevel -= LevelOnLoadLevel;
-            On.Celeste.HeartGem.ctor_EntityData_Vector2 -= HeartGemOnCtor_EntityData_Vector2;
-            On.Celeste.Cassette.ctor_EntityData_Vector2 -= CassetteOnCtor_EntityData_Vector2;
-            On.Monocle.Entity.RemoveSelf -= EntityOnRemoveSelf;
             On.Celeste.Level.TransitionRoutine -= LevelOnTransitionRoutine;
             IL.Celeste.Level.Render -= LevelOnRender;
             On.Celeste.Tags.Initialize -= TagsOnInitialize;
             On.Celeste.LevelLoader.LoadingThread -= LevelLoaderOnLoadingThread;
             IL.Celeste.GameplayRenderer.Render -= GameplayRendererOnRender;
-        }
-
-        private static void HeartGemOnCtor_EntityData_Vector2(On.Celeste.HeartGem.orig_ctor_EntityData_Vector2 orig,
-            HeartGem self, EntityData data, Vector2 offset) {
-            orig(self, data, offset);
-            self.SetEntityData(data);
-        }
-
-        private static void CassetteOnCtor_EntityData_Vector2(On.Celeste.Cassette.orig_ctor_EntityData_Vector2 orig,
-            Cassette self, EntityData data, Vector2 offset) {
-            orig(self, data, offset);
-            self.SetEntityData(data);
-        }
-
-        private static void EntityOnRemoveSelf(On.Monocle.Entity.orig_RemoveSelf orig, Entity self) {
-            if (self is HeartGem || self is Cassette) {
-                Engine.Scene.Entities.FindAll<CollectablePointer>().ForEach(pointer => {
-                    if (pointer.EntityData == self.GetEntityData()) {
-                        pointer.RemoveSelf();
-                    }
-                });
-            }
-
-            orig(self);
         }
 
         private static void LevelOnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self,

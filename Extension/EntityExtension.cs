@@ -1,7 +1,7 @@
 ﻿using Monocle;
 
 namespace Celeste.Mod.StrawberryTool.Extension {
-    public static class EntityExtension {
+    internal static class EntityExtension {
         private const string EntityIdKey = "StrawberryToolEntityId";
         private const string EntityDataKey = "StrawberryToolEntityDataKey";
         public static EntityID ToEntityID(this EntityData entityData) {
@@ -9,23 +9,23 @@ namespace Celeste.Mod.StrawberryTool.Extension {
         }
         
         public static void SetEntityId(this Entity entity, EntityID entityId) {
-            entity.SetExtendedDataValue(EntityIdKey, entityId);
+            entity.GetDynDataInstance().Set(EntityIdKey, entityId);
         }
 
         public static void SetEntityId(this Entity entity, EntityData entityData) {
-            entity.SetExtendedDataValue(EntityIdKey, entityData.ToEntityID());
+            entity.GetDynDataInstance().Set(EntityIdKey, entityData.ToEntityID());
         }
 
         public static EntityID GetEntityId(this Entity entity) {
-            return entity.GetExtendedDataValue<EntityID>(EntityIdKey);
+            return entity.GetDynDataInstance().Get<EntityID>(EntityIdKey);
         }
-        
-        public static EntityData GetEntityData(this Entity entity) {
-            return entity.GetExtendedDataValue<EntityData>(EntityDataKey);
-        }
-        
+
         public static void SetEntityData(this Entity entity, EntityData entityData) {
-            entity.SetExtendedDataValue(EntityDataKey, entityData);
+            entity.GetDynDataInstance().Set(EntityDataKey, entityData);
+        }
+
+        public static EntityData GetEntityData(this Entity entity) {
+            return entity.GetDynDataInstance().Get<EntityData>(EntityDataKey);
         }
     }
 }

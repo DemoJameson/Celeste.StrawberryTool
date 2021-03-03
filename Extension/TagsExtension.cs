@@ -1,8 +1,7 @@
-using System.Collections.Generic;
 using Monocle;
 
 namespace Celeste.Mod.StrawberryTool.Extension {
-    public static class TagsExtension {
+    internal static class TagsExtension {
         private const string TagName = "collectablePointer";
         private static BitTag _CollectablePointer;
 

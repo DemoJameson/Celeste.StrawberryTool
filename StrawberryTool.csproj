@@ -75,7 +75,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Extension\ExtendedDataExtensions.cs" />
+        <Compile Include="Extension\DynDataExtensions.cs" />
         <Compile Include="Extension\EntityExtension.cs" />
         <Compile Include="Extension\CameraExtension.cs" />
         <Compile Include="Extension\SimpleExtension.cs" />

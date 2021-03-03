@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.StrawberryTool.Extension {
-    public static class Vector2Extension {
+    internal static class Vector2Extension {
         public static float Distance(this Vector2 point, Rectangle rect) {
             float xDist = MinXDistance(point, rect);
             float yDist = MinYDistance(point, rect);

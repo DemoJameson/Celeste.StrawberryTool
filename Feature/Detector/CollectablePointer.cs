@@ -86,12 +86,22 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             }
 
             if (level.Session.DoNotLoad.Contains(EntityData.ToEntityID())) {
-                RemoveSelf();
+                fade = 0f;
                 return;
             }
 
             bool isSessionDashless = level.Session.Dashes == 0 && level.Session.StartedFromBeginning;
             if (EntityData.Name == "memorialTextController" && !isSessionDashless) {
+                fade = 0f;
+                return;
+            }
+
+            if (level.Session.Cassette) {
+                fade = 0f;
+                return;
+            }
+
+            if (level.Session.HeartGem && level.Session.Area.Mode == 0) {
                 fade = 0f;
                 return;
             }

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Monocle;
 
 namespace Celeste.Mod.StrawberryTool.Extension {
-    public static class CameraExtension {
+    internal static class CameraExtension {
         public static Vector2? GetIntersectionPoint(this Camera camera, Vector2 start, Vector2 end, float margin = 0f) {
             float marginX = Math.Min(camera.Viewport.Width / 2f, margin);
             float marginY = Math.Min(camera.Viewport.Height / 2f, margin);
