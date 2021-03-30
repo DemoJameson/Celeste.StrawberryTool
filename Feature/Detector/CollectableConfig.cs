@@ -57,7 +57,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                             bool cheatMode = SaveData.Instance.CheatMode;
                             bool initialState = session.FurthestSeenLevel == data.Level.Name || session.Deaths == 0;
                             bool unlockGolden = SaveData.Instance.UnlockedModes >= 3 || SaveData.Instance.DebugMode;
-                            bool completed = SaveData.Instance.Areas[session.Area.ID].Modes[(int) session.Area.Mode].Completed;
+                            bool completed = SaveData.Instance.Areas_Safe[session.Area.ID].Modes[(int) session.Area.Mode].Completed;
                             return (cheatMode || completed && unlockGolden) && initialState;
                         case "memorialTextController":
                             return session.Dashes == 0 && session.StartedFromBeginning;
@@ -96,7 +96,7 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
             new CollectableConfig {
                 ShouldBeAdded = (level, data) => data.Name == "cassette" && !level.Session.Cassette,
                 Scale = 0.4f,
-                HasCollected = (level, data) => SaveData.Instance.Areas[level.Session.Area.ID].Cassette,
+                HasCollected = (level, data) => SaveData.Instance.Areas_Safe[level.Session.Area.ID].Cassette,
                 ShouldDetect = () => Settings.DetectCassettes
             }.With(config =>
                 config.GetSprite = (level, data) => {
