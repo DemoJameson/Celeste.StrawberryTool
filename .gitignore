@@ -330,3 +330,7 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 
+# Game dependencies
+lib-game/Celeste.exe
+lib-game/FNA.dll
+lib-game/MMHOOK_Celeste.dll
