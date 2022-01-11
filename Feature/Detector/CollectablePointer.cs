@@ -48,6 +48,11 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                     } else {
                         transitionFade = 1f;
                     }
+                    // update pointers while level is transitioning
+                    // not using Tags.TransitionUpdate in CollectablePointer is because entity.Update() is called before
+                    // the camera moves, thus what we get in level.Camera.Position is actually the value at last frame,
+                    // and it will cause some visual glitches
+                    Update();
                 },
             });
         }

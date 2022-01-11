@@ -13,12 +13,6 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
         public static void Load() {
             On.Celeste.Level.LoadLevel += LevelOnLoadLevel;
 
-            // update pointers while level is transitioning
-            // not using Tags.TransitionUpdate in CollectablePointer is because entity.Update() is called before
-            // the camera moves, thus what we get in level.Camera.Position is actually the value at last frame,
-            // and it will cause some visual glitches
-            On.Celeste.Level.TransitionRoutine += LevelOnTransitionRoutine;
-
             // render CollectablePointer after level lighting, so pointers will always be visible even room lighting is 0%
             IL.Celeste.Level.Render += LevelOnRender;
             On.Celeste.Tags.Initialize += TagsOnInitialize;
@@ -28,7 +22,6 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
 
         public static void Unload() {
             On.Celeste.Level.LoadLevel -= LevelOnLoadLevel;
-            On.Celeste.Level.TransitionRoutine -= LevelOnTransitionRoutine;
             IL.Celeste.Level.Render -= LevelOnRender;
             On.Celeste.Tags.Initialize -= TagsOnInitialize;
             On.Celeste.LevelLoader.LoadingThread -= LevelLoaderOnLoadingThread;
@@ -53,15 +46,6 @@ namespace Celeste.Mod.StrawberryTool.Feature.Detector {
                 CollectableConfig.All.Find(item => item.ShouldBeAdded(level, entityData));
             if (collectableConfig != null) {
                 level.Add(new CollectablePointer(entityData, collectableConfig));
-            }
-        }
-
-        private static IEnumerator LevelOnTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self,
-            LevelData next, Vector2 direction) {
-            IEnumerator enumerator = orig(self, next, direction);
-            while (enumerator.MoveNext()) {
-                self.Tracker.GetEntities<CollectablePointer>().ForEach(i => i.Update());
-                yield return enumerator.Current;
             }
         }
 
